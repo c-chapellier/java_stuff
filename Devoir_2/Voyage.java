@@ -1,8 +1,135 @@
 /*******************************************
  * Completez le programme a partir d'ici.
  *******************************************/
-+ " à "
-/*******************************************
+
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+
+class OptionVoyage {
+
+    private String name;
+    private double fixedPrice;
+
+    public OptionVoyage(String name, double fixedPrice)
+    {
+        this.name = name;
+        this.fixedPrice = fixedPrice;
+    }
+
+    public String getNom()
+    {
+        return this.name;
+    }
+
+    public double prix()
+    {
+        return this.fixedPrice;
+    }
+
+    public String toString()
+    {
+        return this.name + " ->  " + this.prix() + " CHF";
+    }
+}
+
+class Sejour extends OptionVoyage {
+
+    private int nbrNight;
+    private double pricePerNight;
+
+    public Sejour(String name, double fixedPrice, int nbrNight, double pricePerNight)
+    {
+        super(name, fixedPrice);
+        this.nbrNight = nbrNight;
+        this.pricePerNight = pricePerNight;
+    }
+
+    public double prix()
+    {
+        return (this.nbrNight * this.pricePerNight) + super.prix();
+    }
+}
+
+class Transport extends OptionVoyage {
+
+    static public final double TARIF_LONG = 1500.0;
+    static public final double TARIF_BASE = 200.0;
+
+    private boolean isLong;
+
+    public Transport(String name, double fixedPrice)
+    {
+        super(name, fixedPrice);
+        this.isLong = false;
+    }
+
+    public Transport(String name, double fixedPrice, boolean isLong)
+    {
+        super(name, fixedPrice);
+        this.isLong = isLong;
+    }
+
+    public double prix()
+    {
+        return (this.isLong ? TARIF_LONG : TARIF_BASE) + super.prix();
+    }
+}
+
+class KitVoyage {
+
+    private String startingPoint;
+    private String endingPoint;
+    private ArrayList<OptionVoyage> options = new ArrayList<OptionVoyage>();
+
+    public KitVoyage(String startingPoint, String endingPoint)
+    {
+        this.startingPoint = startingPoint;
+        this.endingPoint = endingPoint;
+    }
+
+    public void ajouterOption(OptionVoyage option)
+    {
+        if (option != null) {
+            this.options.add(option);
+        }
+    }
+
+    public void annuler()
+    {
+        this.options.clear();
+    }
+
+    public int getNbOptions()
+    {
+        return this.options.size();
+    }
+
+    public double prix()
+    {
+        double price = 0.0;
+
+        for (OptionVoyage option: this.options) {
+            price += option.prix();
+        }
+
+        return price;
+    }
+
+    public String toString()
+    {
+        return "Voyage de "
+            + this.startingPoint
+            + " à "
+            + this.endingPoint
+            + ", avec pour options :\n"
+            + this.options.stream()
+                            .map(o -> "   - " + o + "\n")
+                            .collect(Collectors.joining(""))
+            + "Prix total : " + this.prix() + " CHF\n";
+    }
+}
+
+ /*******************************************
  * Ne pas modifier apres cette ligne
  * pour pr'eserver les fonctionnalit'es et
  * le jeu de test fourni.
